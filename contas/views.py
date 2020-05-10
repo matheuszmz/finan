@@ -1,8 +1,9 @@
 import calendar
 import datetime
-from decimal import Decimal
 import math
-from django.db.models import Sum, Count
+from decimal import Decimal
+
+from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CompraForm, RecebimentoForm, ResponsavelForm, ContaForm
@@ -22,6 +23,57 @@ def data_vencimento_str(date, parc, dia_vencimento):
         month = month % 12
 
     return datetime.date(year, month, dia_vencimento)
+
+
+def extrato_contas(request):
+    responsaveis = Responsavel.objects.all()
+
+    if not request.GET:
+        inicial = datetime.date(datetime.date.today().year, datetime.date.today().month, 1)
+        final = datetime.date(datetime.date.today().year, datetime.date.today().month,
+                              calendar.monthrange(datetime.date.today().year, datetime.date.today().month)[1])
+        responsavel = responsaveis[0].nome
+        debitos = Contas_a_pagar.objects.all().filter(responsavel=responsaveis[0].id,
+                                                      data_vencimento__range=[inicial, final])
+        recebimentos = Recebimento.objects.all().filter(responsavel=responsaveis[0].id,
+                                                        data__range=[inicial, final])
+    else:
+        inicial = data(request.GET.get('data_inicial'), '%Y-%m-%d')
+        final = data(request.GET.get('data_final'), '%Y-%m-%d')
+        responsavel = Responsavel.objects.all().get(nome=request.GET.get('responsavel_select'))
+        debitos = Contas_a_pagar.objects.all().filter(responsavel=responsavel.id,
+                                                      data_vencimento__range=[inicial, final])
+        recebimentos = Recebimento.objects.all().filter(responsavel=responsavel.id,
+                                                        data__range=[inicial, final])
+
+    lancamentos = []
+    for debito in debitos:
+        parcelas = Contas_a_pagar.objects.all().filter(
+            conta=debito.conta.id,
+            responsavel=debito.conta.id,
+            data_compra=debito.data_compra,
+            descricao=debito.descricao,
+            valor_parcela=debito.valor_parcela
+        ).aggregate(parcelas=Count('numero_parcela'))['parcelas']
+        lancamentos.append(
+            dict(id=debito.id, data=debito.data_vencimento.strftime('%d/%m/%Y'),
+                 descricao='Dt. {} {}-{} ({}/{})'.format(
+                     debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
+                     debito.numero_parcela, parcelas,
+                 ), valor=float(debito.valor_parcela) * -1)
+        )
+    for recebimento in recebimentos:
+        lancamentos.append(
+            dict(id=recebimento.id, data=recebimento.data.strftime('%d/%m/%Y'), descricao=recebimento.descricao,
+                 valor=float(recebimento.valor, )))
+
+    return render(request, 'extrato_contas.html', {'relatorio': lancamentos,
+                                                   'data_inicial': inicial.strftime('%Y-%m-%d'),
+                                                   'data_final': final.strftime('%Y-%m-%d'),
+                                                   'responsaveis': responsaveis,
+                                                   'responsavel_select': responsavel,
+                                                   'saldo': sum([i['valor'] for i in lancamentos])
+                                                   })
 
 
 def compra_new(request):
@@ -112,57 +164,6 @@ def delete_recebimento(request, id):
     item = get_object_or_404(Recebimento, pk=id)
     item.delete()
     return redirect('recebimento_new')
-
-
-def extrato_contas(request):
-    responsaveis = Responsavel.objects.all()
-
-    if not request.GET:
-        inicial = datetime.date(datetime.date.today().year, datetime.date.today().month, 1)
-        final = datetime.date(datetime.date.today().year, datetime.date.today().month,
-                              calendar.monthrange(datetime.date.today().year, datetime.date.today().month)[1])
-        responsavel = responsaveis[0].nome
-        debitos = Contas_a_pagar.objects.all().filter(responsavel=responsaveis[0].id,
-                                                      data_vencimento__range=[inicial, final])
-        recebimentos = Recebimento.objects.all().filter(responsavel=responsaveis[0].id,
-                                                        data__range=[inicial, final])
-    else:
-        inicial = data(request.GET.get('data_inicial'), '%Y-%m-%d')
-        final = data(request.GET.get('data_final'), '%Y-%m-%d')
-        responsavel = Responsavel.objects.all().get(nome=request.GET.get('responsavel_select'))
-        debitos = Contas_a_pagar.objects.all().filter(responsavel=responsavel.id,
-                                                      data_vencimento__range=[inicial, final])
-        recebimentos = Recebimento.objects.all().filter(responsavel=responsavel.id,
-                                                        data__range=[inicial, final])
-
-    lancamentos = []
-    for debito in debitos:
-        parcelas = Contas_a_pagar.objects.all().filter(
-            conta=debito.conta.id,
-            responsavel=debito.conta.id,
-            data_compra=debito.data_compra,
-            descricao=debito.descricao,
-            valor_parcela=debito.valor_parcela
-        ).aggregate(parcelas=Count('numero_parcela'))['parcelas']
-        lancamentos.append(
-            dict(id=debito.id, data=debito.data_vencimento.strftime('%d/%m/%Y'),
-                 descricao='Dt. {} {}-{} ({}/{})'.format(
-                     debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
-                     debito.numero_parcela, parcelas,
-                 ), valor=float(debito.valor_parcela) * -1)
-        )
-    for recebimento in recebimentos:
-        lancamentos.append(
-            dict(id=recebimento.id, data=recebimento.data.strftime('%d/%m/%Y'), descricao=recebimento.descricao,
-                 valor=float(recebimento.valor, )))
-
-    return render(request, 'extrato_contas.html', {'relatorio': lancamentos,
-                                                   'data_inicial': inicial.strftime('%Y-%m-%d'),
-                                                   'data_final': final.strftime('%Y-%m-%d'),
-                                                   'responsaveis': responsaveis,
-                                                   'responsavel_select': responsavel,
-                                                   'saldo': sum([i['valor'] for i in lancamentos])
-                                                   })
 
 
 def responsavel_new(request):
