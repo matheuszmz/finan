@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import compra_new, extrato_contas, recebimento_new, delete_compra, delete_recebimento, responsavel_new, delete_responsavel, conta_new, delete_conta
+from .views import compra_new, extrato_contas, recebimento_new, delete_compra, delete_recebimento, responsavel_new,\
+    delete_responsavel, conta_new, delete_conta
 
 
 urlpatterns = [
