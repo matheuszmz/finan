@@ -1,0 +1,37 @@
+@media only screen and (max-width: 380px) {
+.mobile {
+    display: inline !important;
+    }
+
+th, td {
+    font-size: 12px;
+}
+
+.desktop {
+    display: none !important;
+    }
+
+.btn-filtrar-mobile {
+    margin-bottom: 1rem!important;
+    margin-top: 1rem!important;
+    }
+
+}
+
+@media only screen and (min-width: 380px) {
+.mobile{ display: none !important; }
+.desktop{ display: inline !important; }
+}
+
+.trash-item {
+    float: right;
+    color: red;
+}
+
+.red {
+    color: red;
+}
+
+.blue{
+    color:blue;
+}

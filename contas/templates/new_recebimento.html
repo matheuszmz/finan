@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+    <!--Alert para confirmação se realmente deseja apagar registro-->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" caller-id="" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body confirm-delete">
+                    Certeza que deseja excluir o lançamento?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDeleteButtonModal">Deletar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row mt-5">
+                <div class="col">{{ form.responsavel|bootstrap }}</div>
+                <div class="col">{{ form.data|bootstrap }}</div>
+                <div class="col-4">{{ form.descricao|bootstrap }}</div>
+                <div class="col">{{ form.valor|bootstrap }}</div>
+                <div class="col mt-4 pt-2">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="mobile">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|bootstrap }}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+    <div>
+        <table class="table table-sm mt-3">
+            <thead>
+            <tr>
+                <th class="text-center">Data</th>
+                <th class="text-left">Responsavel</th>
+                <th class="text-left">Descrição</th>
+                <th class="text-right">Valor R$</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in relatorio %}
+            <tr>
+                <td class="text-center">{{ item.data }}</td>
+                <td class="text-left">{{ item.responsavel }}</td>
+                <td class="text-left">{{ item.descricao }}</td>
+                <td class="text-right">{{ item.valor }}</td>
+                <td class="text-right"><a href="{% url 'delete_recebimento' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"  id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

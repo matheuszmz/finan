@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+    <!--Alert para confirmação se realmente deseja apagar registro-->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" caller-id="" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body confirm-delete">
+                    Certeza que deseja excluir o lançamento?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDeleteButtonModal">Deletar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row mt-5">
+                <div class="col-1"></div>
+                <div class="col-4">{{ form.nome|bootstrap }}</div>
+                <div class="col">{{ form.dia_fechamento|bootstrap }}</div>
+                <div class="col">{{ form.dia_vencimento|bootstrap }}</div>
+                <div class="col mt-4 pt-2">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="mobile">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|bootstrap }}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+    <div class="desktop">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+                <table class="table table-sm mt-3">
+                    <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-left">Nome</th>
+                        <th class="text-center">Dia Fechamento</th>
+                        <th class="text-center">Dia Vencimento</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in relatorio %}
+                    <tr>
+                        <td class="text-center">{{ item.id }}</td>
+                        <td class="text-left">{{ item.nome }}</td>
+                        <td class="text-center">{{ item.dia_fechamento }}</td>
+                        <td class="text-center">{{ item.dia_vencimento }}</td>
+                        <td class="text-center"><a href="{% url 'delete_conta' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <div class="mobile">
+        <table class="table table-sm mt-3">
+            <thead>
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-left">Nome</th>
+                <th class="text-center">Dia Fechamento</th>
+                <th class="text-center">Dia Vencimento</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in relatorio %}
+            <tr>
+                <td class="text-center">{{ item.id }}</td>
+                <td class="text-left">{{ item.nome }}</td>
+                <td class="text-center">{{ item.dia_fechamento }}</td>
+                <td class="text-center">{{ item.dia_vencimento }}</td>
+                <td class="text-center"><a href="{% url 'delete_conta' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"  id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
