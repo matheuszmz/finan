@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from .forms import CompraForm, RecebimentoForm, ResponsavelForm, ContaForm
 from .models import Responsavel, Conta, Contas_a_pagar, Recebimento
@@ -25,6 +26,7 @@ def data_vencimento_str(date, parc, dia_vencimento):
     return datetime.date(year, month, dia_vencimento)
 
 
+@login_required
 def extrato_contas(request):
     responsaveis = Responsavel.objects.all()
 
@@ -76,6 +78,7 @@ def extrato_contas(request):
                                                    })
 
 
+@login_required
 def compra_new(request):
     form = CompraForm(request.POST or None)
     contas_a_pagar = Contas_a_pagar.objects.all().order_by('data_compra')
@@ -128,12 +131,14 @@ def compra_new(request):
     return render(request, 'new_compra.html', {'form': form, 'relatorio': relatorio})
 
 
+@login_required
 def delete_compra(request, id):
     item = get_object_or_404(Contas_a_pagar, pk=id)
     item.delete()
     return redirect('compra_new')
 
 
+@login_required
 def recebimento_new(request):
     form = RecebimentoForm(request.POST or None)
     recebimentos = Recebimento.objects.all().order_by('data')
@@ -160,12 +165,14 @@ def recebimento_new(request):
     return render(request, 'new_recebimento.html', {'form': form, 'relatorio': relatorio})
 
 
+@login_required
 def delete_recebimento(request, id):
     item = get_object_or_404(Recebimento, pk=id)
     item.delete()
     return redirect('recebimento_new')
 
 
+@login_required
 def responsavel_new(request):
     form = ResponsavelForm(request.POST or None)
     relatorio = Responsavel.objects.all().order_by('id')
@@ -177,12 +184,14 @@ def responsavel_new(request):
     return render(request, 'new_responsavel.html', {'form': form, 'relatorio': relatorio})
 
 
+@login_required
 def delete_responsavel(request, id):
     item = get_object_or_404(Responsavel, pk=id)
     item.delete()
     return redirect('responsavel_new')
 
 
+@login_required
 def conta_new(request):
     form = ContaForm(request.POST or None)
     relatorio = Conta.objects.all().order_by('id')
@@ -194,6 +203,7 @@ def conta_new(request):
     return render(request, 'new_conta.html', {'form': form, 'relatorio': relatorio})
 
 
+@login_required
 def delete_conta(request, id):
     item = get_object_or_404(Conta, pk=id)
     item.delete()

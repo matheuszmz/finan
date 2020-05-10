@@ -124,3 +124,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     'static',
 ]
+
+LOGIN_URL = 'login'
+
+LOGIN_REDIRECT_URL = 'extrato_contas'

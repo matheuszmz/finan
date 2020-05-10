@@ -20,7 +20,11 @@
 <body>
     <header class="container">
         <div class="row justify-content-end">
+            {% if user.is_authenticated %}
             <p class="mobile text-capitalize text-right mr-3 mt-3"><i class="fas fa-user mr-1"></i> {{ user.username }}<a class="badge badge-secondary ml-1" href="#">Sair</a></p>
+            {% else %}
+            <a class="mobile btn btn-outline-secondary mr-3 my-2" href="{% url 'login' %}">Login</a>
+            {% endif %}
         </div>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
@@ -52,7 +56,11 @@
                     </li>
                 </ul>
             </div>
-            <p class="desktop text-capitalize text-right mt-1"><i class="fas fa-user mr-1"></i> {{ user.username }}<a class="badge badge-secondary ml-1" href="#">Sair</a></p>
+            {% if user.is_authenticated %}
+            <p class="desktop text-capitalize text-right mt-1"><i class="fas fa-user mr-1"></i> {{ user.username }}<a class="badge badge-secondary ml-1" href="{% url 'logout' %}">Sair</a></p>
+            {% else %}
+            <a class="desktop btn btn-secondary ml-1" href="{% url 'login' %}">Login</a>
+            {% endif %}
         </nav>
     </header>
     <div class="container">
