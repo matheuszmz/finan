@@ -66,7 +66,7 @@
                 <td class="text-left">{{ item.descricao }}</td>
                 <td class="text-right">{{ item.valor_parcela }}</td>
                 <td class="text-center">{{ item.data_vencimento }}</td>
-                <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash-alt"></i></a></td>
+                <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
             </tr>
             {% endfor %}
             </tbody>
@@ -90,7 +90,7 @@
                 <td class="text-left">{{ item.descricao }}</td>
                 <td class="text-right">{{ item.valor_parcela }}</td>
                 <td class="text-center">{{ item.data_vencimento }}</td>
-                <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash-alt"></i></a></td>
+                <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
             </tr>
             {% endfor %}
             </tbody>

@@ -74,7 +74,7 @@ def extrato_contas(request):
                                                    'data_final': final.strftime('%Y-%m-%d'),
                                                    'responsaveis': responsaveis,
                                                    'responsavel_select': responsavel,
-                                                   'saldo': sum([i['valor'] for i in lancamentos])
+                                                   'saldo': round(sum([i['valor'] for i in lancamentos]), 2)
                                                    })
 
 
@@ -102,7 +102,7 @@ def compra_new(request):
         valor_parcela = valor / quantidade_parcelas
         data_compra = datetime.datetime.strptime(request.POST.get('data_compra'), '%Y-%m-%d')
 
-        if data_compra.day <= conta.dia_vencimento:
+        if data_compra.day <= conta.dia_fechamento:
             for i in range(quantidade_parcelas):
                 data_vencimento = data_vencimento_str(data_compra, i, conta.dia_vencimento)
                 Contas_a_pagar.objects.create(
@@ -116,7 +116,7 @@ def compra_new(request):
                 ).save()
         else:
             for i in range(quantidade_parcelas):
-                data_vencimento = data_vencimento_str(data_compra, i, conta.dia_vencimento)
+                data_vencimento = data_vencimento_str(data_compra, i + 1, conta.dia_vencimento)
                 Contas_a_pagar.objects.create(
                     conta=conta,
                     responsavel=responsavel,
