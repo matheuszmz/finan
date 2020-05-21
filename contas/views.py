@@ -26,8 +26,7 @@ def data_vencimento_str(date, parc, dia_vencimento):
     return datetime.date(year, month, dia_vencimento)
 
 
-@login_required
-def extrato_contas(request):
+def gerar_lancamentos_responsaveis_responsavel(request):
     responsaveis = Responsavel.objects.all()
 
     if not request.GET:
@@ -57,25 +56,25 @@ def extrato_contas(request):
             descricao=debito.descricao,
             valor_parcela=debito.valor_parcela
         ).aggregate(parcelas=Count('numero_parcela'))['parcelas']
+        if parcelas == 1:
+            descricao = 'Dt. {} {}-{}'.format(
+                debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao
+            )
+        else:
+            descricao = 'Dt. {} {}-{} ({}/{})'.format(
+                         debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
+                         debito.numero_parcela, parcelas,
+                     )
         lancamentos.append(
             dict(id=debito.id, data=debito.data_vencimento.strftime('%d/%m/%Y'),
-                 descricao='Dt. {} {}-{} ({}/{})'.format(
-                     debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
-                     debito.numero_parcela, parcelas,
-                 ), valor=float(debito.valor_parcela) * -1)
+                 descricao=descricao, valor=float(debito.valor_parcela) * -1)
         )
     for recebimento in recebimentos:
         lancamentos.append(
             dict(id=recebimento.id, data=recebimento.data.strftime('%d/%m/%Y'), descricao=recebimento.descricao,
                  valor=float(recebimento.valor, )))
 
-    return render(request, 'extrato_contas.html', {'relatorio': lancamentos,
-                                                   'data_inicial': inicial.strftime('%Y-%m-%d'),
-                                                   'data_final': final.strftime('%Y-%m-%d'),
-                                                   'responsaveis': responsaveis,
-                                                   'responsavel_select': responsavel,
-                                                   'saldo': round(sum([i['valor'] for i in lancamentos]), 2)
-                                                   })
+    return lancamentos, responsaveis, responsavel, inicial, final
 
 
 @login_required

@@ -1,0 +1,94 @@
+<!--Alert para confirmação se realmente deseja apagar registro-->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" caller-id="" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body confirm-delete">
+                Certeza que deseja excluir o lançamento?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDeleteButtonModal">Deletar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<-- Compras -->
+<div class="desktop">
+    <table class="table table-sm mt-3">
+        <thead>
+        <tr>
+            <th class="text-center">Dt.Compra</th>
+            <th class="text-left">Conta</th>
+            <th class="text-left">Responsavel</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-right">Valor R$</th>
+            <th class="text-center">Vencimento</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in relatorio %}
+        <tr>
+            <td class="text-center">{{ item.data_compra }}</td>
+            <td class="text-left">{{ item.conta }}</td>
+            <td class="text-left">{{ item.responsavel }}</td>
+            <td class="text-left">{{ item.descricao }}</td>
+            <td class="text-right">{{ item.valor_parcela }}</td>
+            <td class="text-center">{{ item.data_vencimento }}</td>
+            <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="mobile">
+    <table class="table table-sm mt-3">
+        <thead>
+        <tr>
+            <th class="text-center">Dt.Compra</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-right">Valor R$</th>
+            <th class="text-center">Vencimento</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in relatorio %}
+        <tr>
+            <td class="text-center">{{ item.data_compra }}</td>
+            <td class="text-left">{{ item.descricao }}</td>
+            <td class="text-right">{{ item.valor_parcela }}</td>
+            <td class="text-center">{{ item.data_vencimento }}</td>
+            <td class="text-right"><a href="{% url 'delete_compra' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<-- Recebimentos -->
+<div>
+        <table class="table table-sm mt-3">
+            <thead>
+            <tr>
+                <th class="text-center">Data</th>
+                <th class="text-left">Responsavel</th>
+                <th class="text-left">Descrição</th>
+                <th class="text-right">Valor R$</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in relatorio %}
+            <tr>
+                <td class="text-center">{{ item.data }}</td>
+                <td class="text-left">{{ item.responsavel }}</td>
+                <td class="text-left">{{ item.descricao }}</td>
+                <td class="text-right">{{ item.valor }}</td>
+                <td class="text-right"><a href="{% url 'delete_recebimento' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"  id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>

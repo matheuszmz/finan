@@ -3,7 +3,7 @@
     display: inline !important;
     }
 
-th, td {
+th, td, span {
     font-size: 12px;
 }
 

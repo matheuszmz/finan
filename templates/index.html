@@ -1,18 +1,96 @@
 {% extends 'base.html' %}
 {% load bootstrap %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Principal{% endblock %}
 
 {% block main %}
-    <div class="container justify-content-center">
-        <img src="https://live.staticflickr.com/4564/38466661226_8b8a3756ce_b.jpg" class="img-fluid" alt="">
+    {% if user.is_authenticated %}
+        <form>
+    <div class="row justify-content-end">
+        <div class="col-sm-4">
+            <div class="input-group mt-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Responsável</span>
+                </div>
+                <select class="form-control" name="responsavel_select">
+                    {% for responsavel in responsaveis %}
+                        {% if responsavel == responsavel_select %}
+                            <option selected>{{ responsavel }}</option>
+                        {% else %}
+                            <option>{{ responsavel }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group mt-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">De</span>
+                </div>
+                <input type="date" name="data_inicial" value="{{ data_inicial }}" class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group mt-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Para</span>
+                </div>
+                <input type="date" name="data_final" value="{{ data_final }}" class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-1 btn-filtrar-mobile mr-sm-1">
+            <button type="submit" class="btn btn-primary my-sm-3">Filtrar</button>
+        </div>
     </div>
+</form>
+
+        <table class="table table-sm">
+    <thead>
+    <tr>
+        <th class="text-center">Data</th>
+        <th class="text-left">Descrição</th>
+        <th class="text-right">Valor R$</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in relatorio %}
+    <tr>
+        <td class="text-center">{{ item.data }}</td>
+        <td class="text-left">{{ item.descricao }}</td>
+        {% if item.valor < 0 %}
+            <td class="red text-right">{{ item.valor }}</td>
+        {% else %}
+            <td class="blue text-right values">{{ item.valor }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <th></th>
+        <th class="text-right">Saldo</th>
+        {% if saldo < 0 %}
+            <th class="red text-right">{{ saldo }}</th>
+        {% else %}
+            <th class="blue text-right">{{ saldo }}</th>
+        {% endif %}
+    </tr>
+    </tbody>
+</table>
+    {% else %}
+        <div class="container justify-content-center">
+            <img src="https://live.staticflickr.com/4564/38466661226_8b8a3756ce_b.jpg" class="img-fluid" alt="">
+        </div>
+    {% endif %}
 {% endblock %}
 
-{% block footer %}
-    <footer class="footer">
-        <div class="container">
-            <span class="text-muted">Finance 1.0 - Desenvolvido com Django 3.0</span>
-        </div>
-    </footer>
-{% endblock %}
+
+{% block footer%}
+    {% if not user.is_authenticated %}
+        <footer class="footer">
+            <div class="container">
+                <span class="text-muted">Finance 1.5 - Icon by <a href="https://www.flaticon.com/br/icone-gratis/financa_2943161" title="surang">surang</a> from <a href="https://www.flaticon.com/br/" title="Flaticon">www.flaticon.com</a></span>
+            </div>
+        </footer>
+    {% endif %}
+{% endblock%}
+

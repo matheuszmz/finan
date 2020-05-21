@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 
 
 class CompraForm(forms.Form):
-    conta = forms.ModelChoiceField(queryset=Conta.objects.all(), empty_label=None, label='')
+    conta = forms.ModelChoiceField(queryset=Conta.objects.all(), empty_label=None, label='Conta do Lançamento')
     responsavel = forms.ModelChoiceField(queryset=Responsavel.objects.all(), empty_label=None, label='Responśavel pelo Lançamento')
     data_compra = forms.DateField(initial=date.today().strftime('%Y-%m-%d'), widget=DateInput(), label='Data da Compra')
     descricao = forms.CharField(max_length=30, label='Descrição')

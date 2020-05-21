@@ -19,69 +19,38 @@
         </div>
     </div>
 
-    <div class="desktop">
+    <div class="jumbotron jumbotron-fluid bg-transparent">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="row mt-5">
-                <div class="col"></div>
-                <div class="col">{{ form.nome|bootstrap }}</div>
-                <div class="col mt-4 pt-2">
+            <div class="row justify-content-center">
+                <div class="col-6">{{ form.nome|bootstrap }}</div>
+                <div class="col-3 mt-4 pt-2">
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="mobile">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|bootstrap }}
-            <button type="submit" class="btn btn-primary">Salvar</button>
-        </form>
-    </div>
-    <div class="desktop">
-        <div class="row">
-            <div class="col"></div>
-            <div class="col-8">
-                <table class="table table-sm mt-3">
-                    <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-left">Nome</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in relatorio %}
-                    <tr>
-                        <td class="text-center">{{ item.id }}</td>
-                        <td class="text-left">{{ item.nome }}</td>
-                        <td class="text-center"><a href="{% url 'delete_responsavel' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <table class="table table-sm mt-3">
+                <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-left">Nome</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in relatorio %}
+                <tr>
+                    <td class="text-center">{{ item.id }}</td>
+                    <td class="text-left">{{ item.nome }}</td>
+                    <td class="text-center"><a href="{% url 'delete_responsavel' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="mobile">
-        <table class="table table-sm mt-3">
-            <thead>
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-left">Nome</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in relatorio %}
-            <tr>
-                <td class="text-center">{{ item.id }}</td>
-                <td class="text-left">{{ item.nome }}</td>
-                <td class="text-center"><a href="{% url 'delete_responsavel' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"  id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
     </div>
 {% endblock %}
