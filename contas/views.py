@@ -27,7 +27,7 @@ def data_vencimento_str(date, parc, dia_vencimento):
 
 
 def gerar_lancamentos_responsaveis_responsavel(request):
-    responsaveis = Responsavel.objects.all()
+    responsaveis = Responsavel.objects.all().order_by('id')
 
     if not request.GET:
         inicial = datetime.date(datetime.date.today().year, datetime.date.today().month, 1)
