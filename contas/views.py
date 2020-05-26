@@ -53,7 +53,6 @@ def gerar_lancamentos_responsaveis_responsavel(request):
             conta=debito.conta.id,
             responsavel=debito.conta.id,
             data_compra=debito.data_compra,
-            descricao=debito.descricao,
             valor_parcela=debito.valor_parcela
         ).aggregate(parcelas=Count('numero_parcela'))['parcelas']
         if parcelas == 1:
@@ -175,12 +174,27 @@ def delete_recebimento(request, id):
 def responsavel_new(request):
     form = ResponsavelForm(request.POST or None)
     relatorio = Responsavel.objects.all().order_by('id')
+    button = 'Salvar'
 
     if form.is_valid():
         form.save()
         return redirect('responsavel_new')
 
-    return render(request, 'new_responsavel.html', {'form': form, 'relatorio': relatorio})
+    return render(request, 'new_responsavel.html', {'form': form, 'relatorio': relatorio, 'nome_botao': button})
+
+
+@login_required
+def responsavel_update(request, id):
+    responsavel = get_object_or_404(Responsavel, pk=id)
+    form = ResponsavelForm(request.POST or None, request.FILES or None, instance=responsavel)
+    relatorio = Responsavel.objects.all().order_by('id')
+    button = 'Alterar'
+
+    if form.is_valid():
+        form.save()
+        return redirect('responsavel_new')
+
+    return render(request, 'new_responsavel.html', {'form': form, 'relatorio': relatorio, 'nome_botao': button})
 
 
 @login_required
@@ -194,12 +208,27 @@ def delete_responsavel(request, id):
 def conta_new(request):
     form = ContaForm(request.POST or None)
     relatorio = Conta.objects.all().order_by('id')
+    button = 'Salvar'
 
     if form.is_valid():
         form.save()
         return redirect('conta_new')
 
-    return render(request, 'new_conta.html', {'form': form, 'relatorio': relatorio})
+    return render(request, 'new_conta.html', {'form': form, 'relatorio': relatorio, 'nome_botao': button})
+
+
+@login_required
+def conta_update(request, id):
+    conta = get_object_or_404(Conta, pk=id)
+    form = ContaForm(request.POST or None, request.FILES or None, instance=conta)
+    relatorio = Conta.objects.all().order_by('id')
+    button = 'Alterar'
+
+    if form.is_valid():
+        form.save()
+        return redirect('conta_new')
+
+    return render(request, 'new_conta.html', {'form': form, 'relatorio': relatorio, 'nome_botao': button})
 
 
 @login_required

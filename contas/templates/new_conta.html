@@ -29,7 +29,7 @@
                         <div class="col">{{ form.dia_fechamento|bootstrap }}</div>
                         <div class="col">{{ form.dia_vencimento|bootstrap }}</div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary">{{ nome_botao }}</button>
                 </div>
             </div>
         </form>
@@ -50,8 +50,9 @@
                 <tbody>
                 {% for item in relatorio %}
                 <tr>
+
                     <td class="text-center">{{ item.id }}</td>
-                    <td class="text-left">{{ item.nome }}</td>
+                    <td class="text-left"><a href="{% url 'conta_update' item.id %}">{{ item.nome }}</a></td>
                     <td class="text-center">{{ item.dia_fechamento }}</td>
                     <td class="text-center">{{ item.dia_vencimento }}</td>
                     <td class="text-center"><a href="{% url 'delete_conta' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
