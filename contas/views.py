@@ -51,8 +51,9 @@ def gerar_lancamentos_responsaveis_responsavel(request):
     for debito in debitos:
         parcelas = Contas_a_pagar.objects.all().filter(
             conta=debito.conta.id,
-            responsavel=debito.conta.id,
+            responsavel=debito.responsavel.id,
             data_compra=debito.data_compra,
+            descricao=debito.descricao,
             valor_parcela=debito.valor_parcela
         ).aggregate(parcelas=Count('numero_parcela'))['parcelas']
         if parcelas == 1:
