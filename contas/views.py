@@ -62,9 +62,9 @@ def gerar_lancamentos_responsaveis_responsavel(request):
             )
         else:
             descricao = 'Dt. {} {}-{} ({}/{})'.format(
-                         debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
-                         debito.numero_parcela, parcelas,
-                     )
+                debito.data_compra.strftime('%d/%m/%Y'), debito.conta.nome, debito.descricao,
+                debito.numero_parcela, parcelas,
+            )
         lancamentos.append(
             dict(id=debito.id, data=debito.data_vencimento.strftime('%d/%m/%Y'),
                  descricao=descricao, valor=float(debito.valor_parcela) * -1)
@@ -140,16 +140,32 @@ def delete_compra(request, id):
 @login_required
 def recebimento_new(request):
     form = RecebimentoForm(request.POST or None)
-    recebimentos = Recebimento.objects.all().order_by('data')
+    responsaveis = Responsavel.objects.all().order_by('id')
     relatorio = []
-    for recebimento in recebimentos:
-        relatorio.append(dict(
-            id=recebimento.id,
-            responsavel=recebimento.responsavel,
-            data=recebimento.data.strftime('%d/%m/%Y'),
-            descricao=recebimento.descricao,
-            valor=recebimento.valor,
-        ))
+
+    if request.GET:
+        inicial = data(request.GET.get('data_inicial'), '%Y-%m-%d')
+        final = data(request.GET.get('data_final'), '%Y-%m-%d')
+        responsavel = Responsavel.objects.all().get(nome=request.GET.get('responsavel_select'))
+        display = 'block'
+        recebimentos = Recebimento.objects.all().filter(
+            responsavel=Responsavel.objects.all().get(nome=request.GET.get('responsavel_select')),
+            data__range=[inicial, final]
+        ).order_by('data')
+        for recebimento in recebimentos:
+            relatorio.append(dict(
+                id=recebimento.id,
+                responsavel=recebimento.responsavel,
+                data=recebimento.data.strftime('%d/%m/%Y'),
+                descricao=recebimento.descricao,
+                valor=recebimento.valor,
+            ))
+    else:
+        inicial = datetime.date(datetime.date.today().year, datetime.date.today().month, 1)
+        final = datetime.date(datetime.date.today().year, datetime.date.today().month,
+                              calendar.monthrange(datetime.date.today().year, datetime.date.today().month)[1])
+        responsavel = responsaveis[0].nome
+        display = 'none'
 
     if request.POST:
         responsavel = Responsavel.objects.all().get(id=request.POST.get('responsavel'))
@@ -161,7 +177,13 @@ def recebimento_new(request):
         ).save()
         return redirect('recebimento_new')
 
-    return render(request, 'new_recebimento.html', {'form': form, 'relatorio': relatorio})
+    return render(request, 'new_recebimento.html', {'form': form,
+                                                    'relatorio': relatorio,
+                                                    'responsaveis': responsaveis,
+                                                    'data_inicial': inicial.strftime('%Y-%m-%d'),
+                                                    'data_final': final.strftime('%Y-%m-%d'),
+                                                    'responsavel_select': responsavel,
+                                                    'display': display})
 
 
 @login_required

@@ -45,6 +45,7 @@
                     <th class="text-center">Dia Fechamento</th>
                     <th class="text-center">Dia Vencimento</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,9 +53,10 @@
                 <tr>
 
                     <td class="text-center">{{ item.id }}</td>
-                    <td class="text-left"><a href="{% url 'conta_update' item.id %}">{{ item.nome }}</a></td>
+                    <td class="text-left">{{ item.nome }}</td>
                     <td class="text-center">{{ item.dia_fechamento }}</td>
                     <td class="text-center">{{ item.dia_vencimento }}</td>
+                    <td class="text-right"><a href="{% url 'conta_update' item.id %}" class="text-primary"><i class="fas fa-edit"></i></a></td>
                     <td class="text-center"><a href="{% url 'delete_conta' item.id %}" class="confirm-delete text-danger" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{item.id}}"><i class="fas fa-trash-alt"></i></a></td>
                 </tr>
                 {% endfor %}

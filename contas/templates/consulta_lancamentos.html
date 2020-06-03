@@ -1,3 +1,28 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block title %}Lançamentos{% endblock %}
+
+{% block main %}
+    <div class="jumbotron jumbotron-fluid bg-transparent">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-10">
+                    {{ form.conta|bootstrap }}
+                    {{ form.responsavel|bootstrap }}
+                    {{ form.data_compra|bootstrap }}
+                    {{ form.descricao|bootstrap }}
+                    {{ form.valor|bootstrap }}
+                    {{ form.quantidade_parcelas|bootstrap }}
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+
 <!--Alert para confirmação se realmente deseja apagar registro-->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" caller-id="" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
